@@ -1,0 +1,1023 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package view;
+
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+import model.Customer;
+import model.Cake;
+import model.Baker;
+import model.CakeOrder;
+
+import service.CustomerService;
+import service.CakeService;
+import service.BakerService;
+import service.CakeOrderService;
+
+/**
+ *
+ * @author Noella
+ */
+public class OrderForm extends javax.swing.JFrame {
+
+    /**
+     * Creates new form OrderForm
+     */
+    public OrderForm() {
+        initComponents();
+        setTableColumns();
+        loadCustomers();
+        loadBakers();
+        loadStatus();
+        //displayOrders();
+    }
+    
+    private void clearFields(){
+
+     orderidtxt.setText("");
+    quantitytxt.setText("");
+    unitpricetxt.setText("");
+    totalamounttxt.setText("");
+
+    customercmb.setSelectedIndex(0);
+    bakercmb.setSelectedIndex(0);
+    statuscmb.setSelectedIndex(0);
+
+    orderdatechooser.setDate(null);
+    deliverydatechooser.setDate(null);
+}
+    
+    private void displayOrders(){
+
+    try{
+        Registry reg = LocateRegistry.getRegistry("127.0.0.1", 5004);
+
+        CakeOrderService service =
+                (CakeOrderService) reg.lookup("order");
+
+        List<CakeOrder> orders =
+                service.findAllOrders();
+
+        DefaultTableModel model =
+                (DefaultTableModel) orderTable.getModel();
+
+        model.setRowCount(0);
+
+        for(CakeOrder order : orders){
+
+            String bakerNames = "";
+
+            if(order.getBakers() != null){
+                for(Baker baker : order.getBakers()){
+                    bakerNames += baker.getFullName() + " ";
+                }
+            }
+
+            Object row[] = {
+                order.getOrderId(),
+                order.getCustomer().getFullName(),
+                bakerNames,
+                order.getQuantity(),
+                order.getTotalAmount(),
+                order.getOrderDate(),
+                order.getDeliveryDate(),
+                order.getStatus()
+            };
+
+            model.addRow(row);
+        }
+
+    }catch(Exception ex){
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this,
+                "Table Error: " + ex.getMessage());
+    }
+}
+    
+    private void setTableColumns(){
+
+    DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
+            
+
+    model.setColumnIdentifiers(new Object[]{
+        "Order ID",
+        "Customer",
+        "Baker",
+        "Quantity",
+        "Total Amount",
+        "Order Date",
+        "Delivery Date",
+        "Status"
+    });
+
+    model.setRowCount(0);
+}
+    
+    private void loadCustomers(){
+
+    try{
+
+        Registry reg = LocateRegistry.getRegistry("127.0.0.1",5004);
+
+        CustomerService service = (CustomerService) reg.lookup("customer");
+                
+
+        List<Customer> customers = service.findAllCustomers();
+                
+
+        customercmb.removeAllItems();
+
+        for(Customer customer : customers){
+
+            customercmb.addItem(
+                    customer.getCustomerId()
+                    + " - " +
+                    customer.getFullName());
+        }
+
+    }catch(Exception ex){
+
+        ex.printStackTrace();
+
+        customercmb.removeAllItems();
+        JOptionPane.showMessageDialog(this,
+                "Customer Loading Error: " + ex.getMessage());
+    }
+}
+    
+    
+    
+    
+    private void loadBakers(){
+
+     try{
+
+        Registry reg = LocateRegistry.getRegistry("127.0.0.1",5004);
+
+        BakerService service = (BakerService) reg.lookup("baker");
+                
+
+        List<Baker> bakers = service.findAllBakers();
+               
+
+        bakercmb.removeAllItems();
+
+        for(Baker baker : bakers){
+
+            bakercmb.addItem(
+                    baker.getBakerId()
+                    + " - " +
+                    baker.getFullName());
+        }
+
+    }catch(Exception ex){
+
+        ex.printStackTrace();
+
+        bakercmb.removeAllItems();
+        JOptionPane.showMessageDialog(this,
+                "Baker Loading Error: " + ex.getMessage());
+    }
+}
+    
+    private void loadStatus(){
+
+    statuscmb.removeAllItems();
+
+    statuscmb.addItem("Pending");
+    statuscmb.addItem("In Progress");
+    statuscmb.addItem("Completed");
+    statuscmb.addItem("Cancelled");
+    System.out.println(statuscmb.getItemCount());
+}
+    
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        orderidtxt = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        customercmb = new javax.swing.JComboBox<>();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        bakercmb = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        quantitytxt = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        totalamounttxt = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        statuscmb = new javax.swing.JComboBox<>();
+        backbtn = new javax.swing.JButton();
+        savebtn = new javax.swing.JButton();
+        updatebtn = new javax.swing.JButton();
+        deletebtn = new javax.swing.JButton();
+        searchbtn = new javax.swing.JButton();
+        calculatetotalbtn = new javax.swing.JButton();
+        clearbtn = new javax.swing.JButton();
+        viewallbtn = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        orderTable = new javax.swing.JTable();
+        jLabel12 = new javax.swing.JLabel();
+        orderdatechooser = new com.toedter.calendar.JDateChooser();
+        deliverydatechooser = new com.toedter.calendar.JDateChooser();
+        unitpricetxt = new javax.swing.JTextField();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPanel1.setBackground(new java.awt.Color(0, 153, 102));
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 3, 18)); // NOI18N
+        jLabel1.setText("CAKE ORDER MANAGEMENT");
+
+        jLabel2.setBackground(new java.awt.Color(153, 153, 0));
+        jLabel2.setIcon(new javax.swing.ImageIcon("C:\\Users\\Noella\\Documents\\NetBeansProjects\\SweetBiteBakeryMgtSystemClient26749\\images\\logo.jpg.jpg")); // NOI18N
+        jLabel2.setText("jLabel2");
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel3.setText("Order ID");
+
+        orderidtxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                orderidtxtActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel4.setText("Customer");
+
+        customercmb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel5.setText("Unit price");
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel6.setText("Baker");
+
+        bakercmb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel7.setText("Quantity");
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel8.setText("Total Amount");
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel9.setText("Order date");
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel10.setText("Delivery date");
+
+        jLabel11.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel11.setText("Status");
+
+        statuscmb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        statuscmb.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                statuscmbActionPerformed(evt);
+            }
+        });
+
+        backbtn.setBackground(new java.awt.Color(102, 204, 0));
+        backbtn.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        backbtn.setText("Back");
+        backbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backbtnActionPerformed(evt);
+            }
+        });
+
+        savebtn.setBackground(new java.awt.Color(204, 204, 0));
+        savebtn.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        savebtn.setText("Save");
+        savebtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                savebtnActionPerformed(evt);
+            }
+        });
+
+        updatebtn.setBackground(new java.awt.Color(102, 204, 0));
+        updatebtn.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        updatebtn.setText("Update");
+        updatebtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updatebtnActionPerformed(evt);
+            }
+        });
+
+        deletebtn.setBackground(new java.awt.Color(153, 204, 0));
+        deletebtn.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        deletebtn.setText("Delete");
+        deletebtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deletebtnActionPerformed(evt);
+            }
+        });
+
+        searchbtn.setBackground(new java.awt.Color(102, 204, 0));
+        searchbtn.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        searchbtn.setText("Search");
+        searchbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchbtnActionPerformed(evt);
+            }
+        });
+
+        calculatetotalbtn.setBackground(new java.awt.Color(153, 204, 0));
+        calculatetotalbtn.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        calculatetotalbtn.setText("Calculate Total");
+        calculatetotalbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                calculatetotalbtnActionPerformed(evt);
+            }
+        });
+
+        clearbtn.setBackground(new java.awt.Color(153, 204, 0));
+        clearbtn.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        clearbtn.setText("Clear");
+        clearbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearbtnActionPerformed(evt);
+            }
+        });
+
+        viewallbtn.setBackground(new java.awt.Color(153, 204, 0));
+        viewallbtn.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        viewallbtn.setText("View All");
+        viewallbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewallbtnActionPerformed(evt);
+            }
+        });
+
+        orderTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(orderTable);
+
+        jLabel12.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel12.setText("ORDER TABLE");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(134, 134, 134)
+                                .addComponent(jLabel1))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(145, 145, 145)
+                                .addComponent(searchbtn)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(backbtn)
+                        .addGap(89, 89, 89))))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(103, 103, 103)
+                .addComponent(clearbtn)
+                .addGap(66, 66, 66)
+                .addComponent(viewallbtn)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(66, 66, 66)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel3)
+                                        .addComponent(jLabel4)
+                                        .addComponent(jLabel5)
+                                        .addComponent(jLabel6)
+                                        .addComponent(jLabel7))
+                                    .addGap(99, 99, 99))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel8)
+                                    .addGap(81, 81, 81))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel11)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel9)
+                                .addGap(101, 101, 101))
+                            .addComponent(jLabel10))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(deliverydatechooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(orderdatechooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(orderidtxt)
+                            .addComponent(customercmb, 0, 126, Short.MAX_VALUE)
+                            .addComponent(bakercmb, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(quantitytxt)
+                            .addComponent(totalamounttxt)
+                            .addComponent(statuscmb, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(unitpricetxt))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 271, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 589, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(51, 51, 51))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(savebtn)
+                        .addGap(44, 44, 44)
+                        .addComponent(updatebtn)
+                        .addGap(51, 51, 51)
+                        .addComponent(deletebtn)
+                        .addGap(54, 54, 54)
+                        .addComponent(calculatetotalbtn)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel12)
+                .addGap(272, 272, 272))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addComponent(backbtn)
+                        .addGap(16, 16, 16)
+                        .addComponent(jLabel1)
+                        .addGap(70, 70, 70)
+                        .addComponent(searchbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(84, 84, 84)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel3)
+                                            .addComponent(orderidtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(34, 34, 34)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel4)
+                                            .addComponent(customercmb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel5)
+                                            .addComponent(unitpricetxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(30, 30, 30)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel6)
+                                            .addComponent(bakercmb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(32, 32, 32)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel7)
+                                            .addComponent(quantitytxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(30, 30, 30)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(totalamounttxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel8)))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(51, 51, 51)
+                                        .addComponent(jLabel12)
+                                        .addGap(27, 27, 27)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(20, 20, 20)
+                                .addComponent(jLabel9))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(orderdatechooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(14, 14, 14)
+                        .addComponent(jLabel10))
+                    .addComponent(deliverydatechooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(statuscmb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(92, 92, 92)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(updatebtn)
+                    .addComponent(deletebtn)
+                    .addComponent(savebtn)
+                    .addComponent(calculatetotalbtn))
+                .addGap(48, 48, 48)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(clearbtn)
+                    .addComponent(viewallbtn))
+                .addContainerGap(46, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(59, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void orderidtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orderidtxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_orderidtxtActionPerformed
+
+    private void statuscmbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statuscmbActionPerformed
+            
+
+    }//GEN-LAST:event_statuscmbActionPerformed
+
+    private void clearbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearbtnActionPerformed
+     clearFields();
+    }//GEN-LAST:event_clearbtnActionPerformed
+
+    private void calculatetotalbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculatetotalbtnActionPerformed
+          try{
+
+        if(quantitytxt.getText().isEmpty()
+                || unitpricetxt.getText().isEmpty()){
+
+            JOptionPane.showMessageDialog(this,
+                    "Enter quantity and unit price");
+
+        }else{
+
+            int quantity =
+                    Integer.parseInt(quantitytxt.getText());
+
+            double unitPrice =
+                    Double.parseDouble(unitpricetxt.getText());
+
+            double totalAmount =
+                    quantity * unitPrice;
+
+            totalamounttxt.setText(String.valueOf(totalAmount));
+        }
+
+    }catch(Exception ex){
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this,
+                "Calculation Error: " + ex.getMessage());
+    }
+    }//GEN-LAST:event_calculatetotalbtnActionPerformed
+
+    private void savebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_savebtnActionPerformed
+         try{
+
+        if(orderidtxt.getText().isEmpty()
+                || quantitytxt.getText().isEmpty()
+                || unitpricetxt.getText().isEmpty()
+                || totalamounttxt.getText().isEmpty()
+                || customercmb.getSelectedItem() == null
+                || bakercmb.getSelectedItem() == null
+                || orderdatechooser.getDate() == null
+                || deliverydatechooser.getDate() == null){
+
+            JOptionPane.showMessageDialog(this, "Fill all fields");
+
+        }else{
+            
+            //validations
+            
+             if(!orderidtxt.getText().matches("[0-9]+")){
+        JOptionPane.showMessageDialog(this,"Order ID must be numbers only");
+                
+        return;
+    }
+
+    if(!quantitytxt.getText().matches("[0-9]+")){
+        JOptionPane.showMessageDialog(this, "Quantity must be numbers only");
+               
+        return;
+    }
+
+    if(!unitpricetxt.getText().matches("[0-9.]+")){
+        JOptionPane.showMessageDialog(this,"Unit Price must be numeric");
+                
+        return;
+    }
+
+    int quantity =Integer.parseInt(quantitytxt.getText());
+            
+
+    if(quantity <= 0){
+        JOptionPane.showMessageDialog(this,"Quantity must be greater than zero");
+                
+        return;
+    }
+
+    double unitPrice = Double.parseDouble(unitpricetxt.getText());
+           
+
+    if(unitPrice < 1000){
+        JOptionPane.showMessageDialog(this, "Unit Price must be at least 1000 RWF");
+               
+        return;
+    }
+
+    if(deliverydatechooser.getDate()
+            .before(orderdatechooser.getDate())){
+
+        JOptionPane.showMessageDialog(this, "Delivery Date must be after Order Date");
+               
+        return;
+    }
+
+            String customerSelected = customercmb.getSelectedItem().toString();
+                   
+
+            String bakerSelected =bakercmb.getSelectedItem().toString();
+                    
+
+            int customerId =Integer.parseInt(customerSelected.split(" - ")[0]);
+                    
+
+            int bakerId = Integer.parseInt(bakerSelected.split(" - ")[0]);
+                   
+
+            Registry reg = LocateRegistry.getRegistry("127.0.0.1", 5004);
+                    
+
+            CustomerService customerService = (CustomerService) reg.lookup("customer");
+                   
+
+            BakerService bakerService =(BakerService) reg.lookup("baker");
+                    
+
+            CakeOrderService orderService =(CakeOrderService) reg.lookup("order");
+                    
+
+            Customer customer =customerService.searchCustomer(customerId);
+                    
+
+            Baker baker =bakerService.searchBaker(bakerId);
+                    
+
+            Set<Baker> bakerSet = new HashSet<>();
+            bakerSet.add(baker);
+
+            CakeOrder order = new CakeOrder();
+
+            order.setOrderId(Integer.parseInt(orderidtxt.getText()));
+            order.setCustomer(customer);
+            order.setBakers(bakerSet);
+            order.setQuantity(Integer.parseInt(quantitytxt.getText()));
+            order.setTotalAmount(Double.parseDouble(totalamounttxt.getText()));
+
+            java.sql.Date orderDate =
+                    new java.sql.Date(orderdatechooser.getDate().getTime());
+
+            java.sql.Date deliveryDate =
+                    new java.sql.Date(deliverydatechooser.getDate().getTime());
+
+            order.setOrderDate(orderDate);
+            order.setDeliveryDate(deliveryDate);
+           String status = statuscmb.getSelectedItem().toString();
+           order.setStatus(status);
+            CakeOrder saved = orderService.registerOrder(order);
+                    
+
+            if(saved != null){
+                JOptionPane.showMessageDialog(this,
+                        "Order Saved Successfully");
+                clearFields();
+            }else{
+                JOptionPane.showMessageDialog(this,
+                        "Order Not Saved");
+            }
+        }
+
+    }catch(Exception ex){
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this,
+                "Save Error: " + ex.getMessage());
+    }
+    }//GEN-LAST:event_savebtnActionPerformed
+
+    private void viewallbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewallbtnActionPerformed
+         displayOrders();
+    }//GEN-LAST:event_viewallbtnActionPerformed
+
+    private void searchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbtnActionPerformed
+         try{
+
+        if(orderidtxt.getText().isEmpty()){
+
+            JOptionPane.showMessageDialog(this,
+                    "Enter Order ID");
+
+        }else{
+
+            int orderId =
+                    Integer.parseInt(orderidtxt.getText());
+
+            Registry reg =
+                    LocateRegistry.getRegistry("127.0.0.1",5004);
+
+            CakeOrderService service =
+                    (CakeOrderService) reg.lookup("order");
+
+            CakeOrder order =
+                    service.searchOrder(orderId);
+
+            if(order != null){
+
+                orderidtxt.setText(
+                        String.valueOf(order.getOrderId()));
+
+                quantitytxt.setText(
+                        String.valueOf(order.getQuantity()));
+
+                totalamounttxt.setText(
+                        String.valueOf(order.getTotalAmount()));
+
+                statuscmb.setSelectedItem(
+                        order.getStatus());
+
+                orderdatechooser.setDate(
+                        order.getOrderDate());
+
+                deliverydatechooser.setDate(
+                        order.getDeliveryDate());
+
+            }else{
+
+                JOptionPane.showMessageDialog(this,
+                        "Order Not Found");
+            }
+        }
+
+    }catch(Exception ex){
+
+        ex.printStackTrace();
+
+        JOptionPane.showMessageDialog(this,
+                "Search Error : " + ex.getMessage());
+    }
+    }//GEN-LAST:event_searchbtnActionPerformed
+
+    private void updatebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updatebtnActionPerformed
+         try{
+
+        if(orderidtxt.getText().isEmpty()
+                || quantitytxt.getText().isEmpty()
+                || totalamounttxt.getText().isEmpty()
+                || customercmb.getSelectedItem() == null
+                || bakercmb.getSelectedItem() == null
+                || orderdatechooser.getDate() == null
+                || deliverydatechooser.getDate() == null){
+
+            JOptionPane.showMessageDialog(this, "Fill all fields");
+
+        }else{
+            
+            //validations
+            
+              if(!orderidtxt.getText().matches("[0-9]+")){
+        JOptionPane.showMessageDialog(this,"Order ID must be numbers only");
+                
+        return;
+    }
+
+    if(!quantitytxt.getText().matches("[0-9]+")){
+        JOptionPane.showMessageDialog(this, "Quantity must be numbers only");
+               
+        return;
+    }
+
+    if(!unitpricetxt.getText().matches("[0-9.]+")){
+        JOptionPane.showMessageDialog(this,"Unit Price must be numeric");
+                
+        return;
+    }
+
+    int quantity =Integer.parseInt(quantitytxt.getText());
+            
+
+    if(quantity <= 0){
+        JOptionPane.showMessageDialog(this,"Quantity must be greater than zero");
+                
+        return;
+    }
+
+    double unitPrice = Double.parseDouble(unitpricetxt.getText());
+           
+
+    if(unitPrice < 1000){
+        JOptionPane.showMessageDialog(this, "Unit Price must be at least 1000 RWF");
+               
+        return;
+    }
+
+    if(deliverydatechooser.getDate()
+            .before(orderdatechooser.getDate())){
+
+        JOptionPane.showMessageDialog(this, "Delivery Date must be after Order Date");
+               
+        return;
+    }
+
+            String customerSelected = customercmb.getSelectedItem().toString();
+            String bakerSelected = bakercmb.getSelectedItem().toString();
+
+            int customerId = Integer.parseInt(customerSelected.split(" - ")[0]);
+            int bakerId = Integer.parseInt(bakerSelected.split(" - ")[0]);
+
+            Registry reg = LocateRegistry.getRegistry("127.0.0.1", 5004);
+
+            CustomerService customerService = (CustomerService) reg.lookup("customer");
+                    
+
+            BakerService bakerService = (BakerService) reg.lookup("baker");
+                    
+
+            CakeOrderService orderService = (CakeOrderService) reg.lookup("order");
+
+                   
+            Customer customer = customerService.searchCustomer(customerId);
+            Baker baker = bakerService.searchBaker(bakerId);
+
+            Set<Baker> bakerSet = new HashSet<>();
+            bakerSet.add(baker);
+
+            CakeOrder order = new CakeOrder();
+
+            order.setOrderId(Integer.parseInt(orderidtxt.getText()));
+            order.setCustomer(customer);
+            order.setBakers(bakerSet);
+            order.setQuantity(Integer.parseInt(quantitytxt.getText()));
+            order.setTotalAmount(Double.parseDouble(totalamounttxt.getText()));
+
+            java.sql.Date orderDate =
+                    new java.sql.Date(orderdatechooser.getDate().getTime());
+
+            java.sql.Date deliveryDate =
+                    new java.sql.Date(deliverydatechooser.getDate().getTime());
+
+            order.setOrderDate(orderDate);
+            order.setDeliveryDate(deliveryDate);
+            order.setStatus(statuscmb.getSelectedItem().toString());
+
+            CakeOrder updated = orderService.updateOrder(order);
+
+            if(updated != null){
+                JOptionPane.showMessageDialog(this, "Order Updated Successfully");
+                displayOrders();
+                clearFields();
+            }else{
+                JOptionPane.showMessageDialog(this, "Order Not Updated");
+            }
+        }
+
+    }catch(Exception ex){
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Update Error: " + ex.getMessage());
+    }
+    }//GEN-LAST:event_updatebtnActionPerformed
+
+    private void deletebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletebtnActionPerformed
+         try{
+
+        if(orderidtxt.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Enter Order ID");
+        }else{
+
+            int orderId = Integer.parseInt(orderidtxt.getText());
+
+            Registry reg = LocateRegistry.getRegistry("127.0.0.1", 5004);
+            CakeOrderService service =
+                    (CakeOrderService) reg.lookup("order");
+
+            CakeOrder order = service.searchOrder(orderId);
+
+            if(order != null){
+                CakeOrder deleted = service.deleteOrder(order);
+
+                if(deleted != null){
+                    JOptionPane.showMessageDialog(this, "Order Deleted Successfully");
+                    displayOrders();
+                    clearFields();
+                }
+            }else{
+                JOptionPane.showMessageDialog(this, "Order Not Found");
+            }
+        }
+
+    }catch(Exception ex){
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Delete Error: " + ex.getMessage());
+    }
+    }//GEN-LAST:event_deletebtnActionPerformed
+
+    private void backbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backbtnActionPerformed
+         DashboardForm dashboard = new DashboardForm();
+    dashboard.setVisible(true);
+    this.dispose();
+    }//GEN-LAST:event_backbtnActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(OrderForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(OrderForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(OrderForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(OrderForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new OrderForm().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton backbtn;
+    private javax.swing.JComboBox<String> bakercmb;
+    private javax.swing.JButton calculatetotalbtn;
+    private javax.swing.JButton clearbtn;
+    private javax.swing.JComboBox<String> customercmb;
+    private javax.swing.JButton deletebtn;
+    private com.toedter.calendar.JDateChooser deliverydatechooser;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable orderTable;
+    private com.toedter.calendar.JDateChooser orderdatechooser;
+    private javax.swing.JTextField orderidtxt;
+    private javax.swing.JTextField quantitytxt;
+    private javax.swing.JButton savebtn;
+    private javax.swing.JButton searchbtn;
+    private javax.swing.JComboBox<String> statuscmb;
+    private javax.swing.JTextField totalamounttxt;
+    private javax.swing.JTextField unitpricetxt;
+    private javax.swing.JButton updatebtn;
+    private javax.swing.JButton viewallbtn;
+    // End of variables declaration//GEN-END:variables
+}

@@ -1,0 +1,30 @@
+# Java compiled files
+*.class
+
+# Build folders
+build/
+dist/
+target/
+out/
+
+# NetBeans private files
+nbproject/private/
+
+# IntelliJ
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+SweetBiteBakeryMgtSystemServer26749/src/hibernate.cfg.xml
+SweetBiteBakeryMgtSystemClient26749/nbproject/private/
+SweetBiteBakeryMgtSystemServer26749/nbproject/private/
+*.prn
+*.prn2
